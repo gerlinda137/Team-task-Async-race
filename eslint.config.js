@@ -11,24 +11,31 @@ export default [
     languageOptions: {
       parser: ts.parser,
       parserOptions: {
-        project: "./tsconfig.json",
+        project: ["./tsconfig.eslint.json"],
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
-      "max-lines-per-function": ["error", { 
-        "max": 40, 
-        "skipBlankLines": true, 
-        "skipComments": true 
-      }],
+      "max-lines-per-function": [
+        "error",
+        {
+          max: 40,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
       "unicorn/prevent-abbreviations": "warn",
       "unicorn/no-null": "warn",
       "unicorn/consistent-function-scoping": "error",
       "unicorn/no-array-for-each": "warn",
       "unicorn/no-useless-undefined": "error",
-      "no-magic-numbers": ["warn", { 
-        "ignore": [0, 1], 
-        "ignoreArrayIndexes": true 
-      }],
+      "no-magic-numbers": [
+        "warn",
+        {
+          ignore: [0, 1],
+          ignoreArrayIndexes: true,
+        },
+      ],
     },
   },
 ];
