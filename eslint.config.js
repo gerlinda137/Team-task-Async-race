@@ -12,7 +12,7 @@ export default [
       parser: ts.parser,
       parserOptions: {
         project: ["./tsconfig.eslint.json"],
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname, 
       },
     },
     rules: {
