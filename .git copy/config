@@ -10,13 +10,11 @@
 	remote = origin
 	merge = refs/heads/main
 	vscode-merge-base = origin/main
-[branch "feature/18-basic-views-header"]
-	remote = origin
-	merge = refs/heads/feature/18-basic-views-header
-	vscode-merge-base = origin/feature/18-basic-views-header
 [branch "develop"]
 	remote = origin
 	merge = refs/heads/develop
 	vscode-merge-base = origin/develop
 [branch "fix-develop-sync"]
 	vscode-merge-base = origin/develop
+[branch "feature/18-basic-views-header"]
+	vscode-merge-base = origin/main
