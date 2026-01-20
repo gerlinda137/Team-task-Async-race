@@ -1,6 +1,6 @@
 import { BaseComponent } from './ui/base-component';
 import { Button } from './ui/button';
-
+import "./header.css"
 export class Header extends BaseComponent {
   constructor(onViewChange: (view: 'garage' | 'winners') => void) {
     super('header', 'app-header');
