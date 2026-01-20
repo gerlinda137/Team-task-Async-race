@@ -1,3 +1,10 @@
+/* eslint-disable unicorn/prefer-math-trunc */
+/* eslint-disable unicorn/prefer-array-some */
+/* eslint-disable unicorn/numeric-separators-style */
+/* eslint-disable unicorn/prevent-abbreviations */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable no-undef */
+
 const jsonServer = require('json-server');
 
 const db = {
