@@ -1,39 +1,24 @@
-import './style.css';
-import { Header } from './components/header';
-import { GarageView, WinnersView } from './views';
+import './style.css'
+import typescriptLogo from './typescript.svg'
+import viteLogo from '/vite.svg'
+import { setupCounter } from './counter.ts'
 
-class App {
-  private root: HTMLElement;
-  private header: Header;
-  private currentView: GarageView | WinnersView | undefined = undefined;
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+  <div>
+    <a href="https://vite.dev" target="_blank">
+      <img src="${viteLogo}" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://www.typescriptlang.org/" target="_blank">
+      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
+    </a>
+    <h1>Vite + TypeScript</h1>
+    <div class="card">
+      <button id="counter" type="button"></button>
+    </div>
+    <p class="read-the-docs">
+      Click on the Vite and TypeScript logos to learn more
+    </p>
+  </div>
+`
 
-  constructor(root: HTMLElement) {
-    this.root = root;
-
-    this.header = new Header((view) => this.switchView(view));
-
-    this.init();
-  }
-
-  private init(): void {
-    this.root.append(this.header.getElement());
-
-    this.switchView('garage');
-  }
-
-  private switchView(viewName: 'garage' | 'winners'): void {
-    if (this.currentView) {
-      this.currentView.getElement().remove();
-    }
-
-    this.currentView = viewName === 'garage' ? new GarageView() : new WinnersView();
-
-    this.root.append(this.currentView.getElement());
-  }
-}
-
-const rootElement = document.querySelector<HTMLElement>('#app');
-
-if (rootElement) {
-  new App(rootElement);
-}
+setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
