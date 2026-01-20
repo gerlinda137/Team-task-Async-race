@@ -1,4 +1,4 @@
-import { BaseComponent } from './BaseComponent';
+import { BaseComponent } from './base-component.ts';
 
 export class Button extends BaseComponent<HTMLButtonElement> {
   constructor(label: string, onClick: () => void, className = '') {
