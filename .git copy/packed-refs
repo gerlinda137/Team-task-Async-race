@@ -1,0 +1,10 @@
+# pack-refs with: peeled fully-peeled sorted 
+ccee51c4e50aa6de876639d741d192f759466d81 refs/remotes/origin/develop
+12d0cd060d9181bc43fcb4ae99440abee0a71909 refs/remotes/origin/feature/12-unicorn-eslint
+2dd0988540b3b203aa8e85102866dbbe67ee8026 refs/remotes/origin/feature/13-prettier-setup
+0feabc7a625724cb3339c1589911a84525428716 refs/remotes/origin/feature/16-spa-skeleton
+ccee51c4e50aa6de876639d741d192f759466d81 refs/remotes/origin/feature/18-basic-views-header
+ccee51c4e50aa6de876639d741d192f759466d81 refs/remotes/origin/feature/19-persistent-view-state
+fbdd62dd695f96aba8346031574212e4e45a30b8 refs/remotes/origin/feature/ci-check
+3862d01fd1a0421530d530ad2c58c961da0e1644 refs/remotes/origin/feature/docs
+29c75ea770574dc5ccf2eaf3e4ed171d37996e14 refs/remotes/origin/main
