@@ -1,0 +1,18 @@
+#!/bin/sh
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+case "$BRANCH" in
+  feature/*|fix/*)
+    echo "✅ Branch name OK: $BRANCH"
+    ;;
+  *)
+    echo "❌ Invalid branch name: $BRANCH"
+    echo "Allowed: feature/<name> or fix/<name>"
+    exit 1
+    ;;
+esac
+
+echo "🔍 Lint staged files..."
+npx lint-staged
+

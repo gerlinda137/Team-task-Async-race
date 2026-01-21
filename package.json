@@ -10,7 +10,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "ci:format": "prettier --check ."
+    "ci:format": "prettier --check .",
+    "prepare": "husky install"
+  },
+   "lint-staged": {
+    "**/*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -18,7 +25,9 @@
     "@types/mocha": "^10.0.10",
     "eslint": "^9.39.2",
     "eslint-plugin-unicorn": "^62.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
     "prettier": "3.8.0",
     "ts-jest": "^29.4.6",
     "typescript": "~5.9.3",
