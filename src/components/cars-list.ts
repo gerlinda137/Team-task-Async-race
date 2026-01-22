@@ -7,6 +7,7 @@ export class CarsList extends BaseComponent<HTMLUListElement> {
   }
 
   public setCars(cars: Car[]): void {
+    this.element.innerHTML = "";
     for (const car of cars) {
       const carItem = new CarItem(car);
       this.element.append(carItem.getElement());
