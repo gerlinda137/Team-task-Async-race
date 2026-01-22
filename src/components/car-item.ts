@@ -1,5 +1,6 @@
 import { BaseComponent } from "./ui/base-component";
 import { CarIcon } from "./ui/car-icon";
+import "./car-item.css";
 
 export interface Car {
   name: string;

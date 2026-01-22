@@ -1,5 +1,6 @@
 import { CarItem, type Car } from "./car-item";
 import { BaseComponent } from "./ui/base-component";
+import "./car-list.css";
 
 export class CarsList extends BaseComponent<HTMLUListElement> {
   constructor() {
