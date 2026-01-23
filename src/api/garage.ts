@@ -46,3 +46,13 @@ export const createCar = async (
 
   return response.json();
 };
+
+export const deleteCar = async (id: number) => {
+  const response = await fetch(`${BASE_URL}/garage/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete car (${response.status})`);
+  }
+};
