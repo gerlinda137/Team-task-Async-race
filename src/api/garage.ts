@@ -6,6 +6,12 @@ export interface GarageResponse {
   totalCount: string;
 }
 
+interface CreateCarSuccessResponse {
+  name: string;
+  color: string;
+  id: number;
+}
+
 export const getCars = async (
   page: number,
   limit: number = CARS_PER_PAGE,
@@ -18,4 +24,25 @@ export const getCars = async (
     cars: await response.json(),
     totalCount: response.headers.get("X-Total-Count") || "0",
   };
+};
+
+export const createCar = async (
+  name: string,
+  color: string,
+): Promise<CreateCarSuccessResponse> => {
+  const response = await fetch(`${BASE_URL}/garage`, {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      color,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to create car (${response.status})`);
+  }
+
+  return response.json();
 };
