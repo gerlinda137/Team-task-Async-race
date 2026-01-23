@@ -1,10 +1,12 @@
 import { BaseComponent } from "../../components/ui/base-component";
 import { getCars } from "../../api/garage";
 import { CarsList } from "../../components/cars-list";
+import { CarForm } from "../../components/car-form";
 
 const CARS_PER_PAGE = 7;
 
 export class GarageView extends BaseComponent {
+  private carForm: CarForm;
   private page = 1;
   private totalCount = 0;
   private totalPages = 0;
@@ -32,8 +34,11 @@ export class GarageView extends BaseComponent {
     );
     this.titleEl.textContent = `Garage ${this.totalCount}`;
 
+    this.carForm = new CarForm(() => this.loadPage(this.page));
+
     this.element.append(
       this.titleEl,
+      this.carForm.getElement(),
       this.pageEl,
       this.prevBtn,
       this.nextBtn,
@@ -56,11 +61,11 @@ export class GarageView extends BaseComponent {
   }
 
   private updateBtns(): void {
-    if (this.page >= 1) {
+    if (this.page === 1) {
       this.prevBtn.disabled = true;
+    } else if (this.page > 1) {
+      this.prevBtn.disabled = false;
     }
-    if (this.page >= this.totalPages) {
-      this.nextBtn.disabled = true;
-    }
+    this.nextBtn.disabled = this.page === this.totalPages ? true : false;
   }
 }

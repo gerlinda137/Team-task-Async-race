@@ -10,4 +10,8 @@ export class TextInput extends BaseComponent<HTMLInputElement> {
   public getValue() {
     return this.element.value;
   }
+
+  public setValue(value: string) {
+    this.element.value = value;
+  }
 }
