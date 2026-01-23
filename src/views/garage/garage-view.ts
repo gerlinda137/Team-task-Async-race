@@ -1,5 +1,5 @@
 import { BaseComponent } from "../../components/ui/base-component";
-import { getCars } from "../../api/garage";
+import { deleteCar, getCars } from "../../api/garage";
 import { CarsList } from "../../components/cars-list";
 import { CarForm } from "../../components/car-form";
 import { Button } from "../../components/ui/button";
@@ -20,7 +20,7 @@ export class GarageView extends BaseComponent {
   private prevBtn = document.createElement("button");
   private nextBtn = document.createElement("button");
 
-  private carsList = new CarsList();
+  private carsList: CarsList;
 
   constructor() {
     super("div", "garage-view");
@@ -42,6 +42,7 @@ export class GarageView extends BaseComponent {
     this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
       generateCars(GENERATE_CARS_COUNT, () => this.loadPage(this.page)),
     );
+    this.carsList = new CarsList((id) => void this.handleDelete(id));
 
     this.element.append(
       this.titleEl,
@@ -75,5 +76,10 @@ export class GarageView extends BaseComponent {
       this.prevBtn.disabled = false;
     }
     this.nextBtn.disabled = this.page === this.totalPages ? true : false;
+  }
+
+  private async handleDelete(id: number): Promise<void> {
+    await deleteCar(id);
+    await this.loadPage(this.page);
   }
 }
