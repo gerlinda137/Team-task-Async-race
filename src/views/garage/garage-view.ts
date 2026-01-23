@@ -2,11 +2,15 @@ import { BaseComponent } from "../../components/ui/base-component";
 import { getCars } from "../../api/garage";
 import { CarsList } from "../../components/cars-list";
 import { CarForm } from "../../components/car-form";
+import { Button } from "../../components/ui/button";
+import { generateCars } from "../../utils/generate-cars";
 
 const CARS_PER_PAGE = 7;
+const GENERATE_CARS_COUNT = 100;
 
 export class GarageView extends BaseComponent {
   private carForm: CarForm;
+  private generate100CarsBtn: Button;
   private page = 1;
   private totalCount = 0;
   private totalPages = 0;
@@ -35,9 +39,13 @@ export class GarageView extends BaseComponent {
     this.titleEl.textContent = `Garage ${this.totalCount}`;
 
     this.carForm = new CarForm(() => this.loadPage(this.page));
+    this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
+      generateCars(GENERATE_CARS_COUNT, () => this.loadPage(this.page)),
+    );
 
     this.element.append(
       this.titleEl,
+      this.generate100CarsBtn.getElement(),
       this.carForm.getElement(),
       this.pageEl,
       this.prevBtn,
@@ -53,7 +61,7 @@ export class GarageView extends BaseComponent {
     this.page = page;
 
     this.totalCount = Number(totalCount) || 0;
-    this.totalPages = Math.round(this.totalCount / CARS_PER_PAGE);
+    this.totalPages = Math.max(1, Math.ceil(this.totalCount / CARS_PER_PAGE));
     this.titleEl.textContent = `Garage ${totalCount}`;
     this.pageEl.textContent = `Page ${this.page} / ${this.totalPages}`;
     this.carsList.setCars(cars);
