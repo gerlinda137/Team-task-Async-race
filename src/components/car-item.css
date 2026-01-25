@@ -1,24 +1,10 @@
-.car-list__item button {
-  background: #333;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: bold;
-  margin-right: 0.3em;
-}
-
-.car-list__item button:hover:not(:disabled) {
-  background: #444;
-}
-
-.car-list__item button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.car-list__item {
+  margin-bottom: 1rem;
+  position: relative;
+  background-color: #ffffff17;
+  border-bottom: 2px solid beige;
+  text-align: left;
+  padding: 0.6rem;
 }
 
 .car__title {
@@ -27,15 +13,27 @@
   font-size: 1rem;
 }
 
+.car__visual-area {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  min-height: 40px;
+  padding-top: 0.5rem;
+}
+
 .car__img-wrapper {
-  display: flex;
+  position: relative;
+  display: inline-block;
+  min-height: 40px;
+  width: 95%;
 }
 
 .car__img-wrapper svg {
   width: 3rem;
   height: 3rem;
-}
-
-.car__img-wrapper::after {
-  content: none;
+  position: relative;
+  left: 0;
+  bottom: 0;
+  will-change: transform;
+  transition: transform 0s linear;
 }

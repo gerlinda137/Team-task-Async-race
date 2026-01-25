@@ -3,6 +3,9 @@ import { CarIcon } from "./ui/car-icon";
 import { Button } from "./ui/button";
 import "./car-item.css";
 
+import { startAnimation, stopAnimation } from "../utils/animation";
+import { startEngine, stopEngine } from "../api/engine-api";
+
 export interface Car {
   name: string;
   color: string;
@@ -16,8 +19,13 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
 
   private startButton!: Button;
   private stopButton!: Button;
+  private carVisualElement!: HTMLElement;
 
-  constructor(car: Car, onDeleted: () => void, onEdited: (car: Car) => void) {
+  constructor(
+    car: Car,
+    onDeleted: (id: number) => void,
+    onEdited: (car: Car) => void
+  ) {
     super("li", "car-list__item");
     this.carId = car.id;
     this.element.id = `car-${car.id}`;
@@ -26,9 +34,17 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     this.render(car);
   }
 
-  private render(car: Car) {
-    const managementControls = document.createElement("div");
-    managementControls.className = "car__management";
+  private render(car: Car): void {
+    this.element.append(
+      this.renderManagement(car),
+      this.renderEngineControls(),
+      this.renderVisualArea(car.color)
+    );
+  }
+
+  private renderManagement(car: Car): HTMLElement {
+    const container = document.createElement("div");
+    container.className = "car__management";
 
     const editButton = new Button("edit", "edit-btn", "button", () =>
       this.onEdited(car)
@@ -36,52 +52,73 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     const deleteButton = new Button("delete", "delete-btn", "button", () =>
       this.onDeleted(this.carId)
     );
-    const carTitle = document.createElement("h2");
-    carTitle.className = "car__title";
-    carTitle.textContent = car.name;
 
-    managementControls.append(
-      editButton.getElement(),
-      deleteButton.getElement(),
-      carTitle
+    const title = document.createElement("h2");
+    title.className = "car__title";
+    title.textContent = car.name;
+
+    container.append(editButton.getElement(), deleteButton.getElement(), title);
+    return container;
+  }
+
+  private renderEngineControls(): HTMLElement {
+    const container = document.createElement("div");
+    container.className = "car__engine-controls";
+
+    this.startButton = new Button(
+      "A",
+      "start-engine-btn",
+      "button",
+      async () => {
+        this.toggleEngineUI(true);
+        try {
+          const { velocity } = await startEngine(this.carId);
+          await startAnimation(this.carId, this.carVisualElement, velocity);
+        } catch (error) {
+          console.warn("Engine/animation error:", error);
+        } finally {
+          this.toggleEngineUI(false);
+        }
+      }
     );
 
-    const engineControls = document.createElement("div");
-    engineControls.className = "car__engine-controls";
-
-    this.startButton = new Button("A", "start-engine-btn", "button", () =>
-      this.toggleEngineUI(true)
-    );
-    this.stopButton = new Button("B", "stop-engine-btn", "button", () =>
-      this.toggleEngineUI(false)
-    );
+    this.stopButton = new Button("B", "stop-engine-btn", "button", async () => {
+      this.toggleEngineUI(false);
+      try {
+        await stopEngine(this.carId);
+      } catch (error) {
+        console.warn("stopEngine failed", error);
+      }
+      stopAnimation(this.carId);
+    });
 
     this.stopButton.getElement().disabled = true;
-
-    engineControls.append(
+    container.append(
       this.startButton.getElement(),
       this.stopButton.getElement()
     );
+    return container;
+  }
 
+  private renderVisualArea(color: string): HTMLElement {
     const visualArea = document.createElement("div");
     visualArea.className = "car__visual-area";
-    const carIcon = new CarIcon(car.color);
-    visualArea.append(carIcon.getElement());
 
-    this.element.append(managementControls, engineControls, visualArea);
+    const carIcon = new CarIcon(color);
+    const iconWrapper = carIcon.getElement();
+    const svg = iconWrapper.querySelector("svg");
+
+    this.carVisualElement =
+      (svg as unknown as HTMLElement) ?? (iconWrapper as HTMLElement);
+    visualArea.append(iconWrapper);
+    return visualArea;
   }
 
   private toggleEngineUI(isStarting: boolean): void {
-    const startButtonElement =
-      this.startButton.getElement() as HTMLButtonElement;
-    const stopButtonElement = this.stopButton.getElement() as HTMLButtonElement;
+    const startButton = this.startButton.getElement() as HTMLButtonElement;
+    const stopButton = this.stopButton.getElement() as HTMLButtonElement;
 
-    if (isStarting) {
-      startButtonElement.disabled = true;
-      stopButtonElement.disabled = false;
-    } else {
-      startButtonElement.disabled = false;
-      stopButtonElement.disabled = true;
-    }
+    startButton.disabled = isStarting;
+    stopButton.disabled = !isStarting;
   }
 }
