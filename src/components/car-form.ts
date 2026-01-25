@@ -6,6 +6,9 @@ import { TextInput } from "./ui/text-input";
 import "./car-form.css";
 import type { Car } from "./car-item";
 import { CarIcon } from "./ui/car-icon";
+import { generateCars } from "../utils/generate-cars";
+
+const GENERATE_CARS_COUNT = 100;
 
 export class CarForm extends BaseComponent<HTMLFormElement> {
   private textInput = new TextInput("type car name", "create-name-input");
@@ -16,17 +19,23 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
   );
   private editingCarId: number | null = null;
   private submitBtn = new Button("create car", undefined, "submit");
+  private generate100CarsBtn: Button;
 
   private onCreated?: () => void;
   constructor(onCreated?: () => void) {
     super("form", "car-form");
+
     this.onCreated = onCreated;
+    this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
+      generateCars(GENERATE_CARS_COUNT, () => this.onCreated?.()),
+    );
     this.element.append(
       this.previewIcon.getElement(),
       this.textInput.getElement(),
       this.colorInput.getElement(),
 
       this.submitBtn.getElement(),
+      this.generate100CarsBtn.getElement(),
     );
     this.element.addEventListener(
       "submit",

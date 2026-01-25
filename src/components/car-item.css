@@ -13,7 +13,6 @@
   font-size: 1rem;
 }
 
-/* Visual area wrapper - keep overflow hidden so the car doesn't escape */
 .car__visual-area {
   position: relative;
   width: 100%;
@@ -22,16 +21,13 @@
   padding-top: 0.5rem;
 }
 
-/* The image wrapper should be positioned relative so transform affects the element inside */
 .car__img-wrapper {
   position: relative;
   display: inline-block;
-  /* ensure there's space for the svg width */
   min-height: 40px;
   width: 95%;
 }
 
-/* Make the svg positioned normally (relative) and allow transforms */
 .car__img-wrapper svg {
   width: 3rem;
   height: 3rem;
