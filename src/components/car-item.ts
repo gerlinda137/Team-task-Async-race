@@ -20,13 +20,10 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
   private startButton!: Button;
   private stopButton!: Button;
 
+  // the element we will animate (prefer the <svg> inside the icon wrapper)
   private carVisualElement!: HTMLElement;
 
-  constructor(
-    car: Car,
-    onDeleted: (id: number) => void,
-    onEdited: (car: Car) => void
-  ) {
+  constructor(car: Car, onDeleted: (id: number) => void, onEdited: (car: Car) => void) {
     super("li", "car-list__item");
     this.carId = car.id;
     this.element.id = `car-${car.id}`;
@@ -39,45 +36,41 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     const managementControls = document.createElement("div");
     managementControls.className = "car__management";
 
-    const editButton = new Button("edit", "edit-btn", "button", () =>
-      this.onEdited(car)
-    );
-    const deleteButton = new Button("delete", "delete-btn", "button", () =>
-      this.onDeleted(this.carId)
-    );
+    const editButton = new Button("edit", "edit-btn", "button", () => this.onEdited(car));
+    const deleteButton = new Button("delete", "delete-btn", "button", () => this.onDeleted(this.carId));
     const carTitle = document.createElement("h2");
     carTitle.className = "car__title";
     carTitle.textContent = car.name;
 
-    managementControls.append(
-      editButton.getElement(),
-      deleteButton.getElement(),
-      carTitle
-    );
+    managementControls.append(editButton.getElement(), deleteButton.getElement(), carTitle);
 
     const engineControls = document.createElement("div");
     engineControls.className = "car__engine-controls";
 
-    this.startButton = new Button(
-      "A",
-      "start-engine-btn",
-      "button",
-      async () => {
-        this.toggleEngineUI(true);
+    // Start button handler: request engine velocity then animate the car svg
+    this.startButton = new Button("A", "start-engine-btn", "button", async () => {
+      // update UI immediately
+      this.toggleEngineUI(true);
 
-        try {
-          const { velocity } = await startEngine(this.carId);
+      try {
+        const { velocity } = await startEngine(this.carId);
 
-          await startAnimation(this.carId, this.carVisualElement, velocity);
-        } catch (err) {
-          console.warn("Animation/engine error", err);
-        } finally {
-          this.toggleEngineUI(false);
-        }
+        // startAnimation resolves with finished:true if it reached the end,
+        // or finished:false if stopAnimation was called
+        const result = await startAnimation(this.carId, this.carVisualElement, velocity);
+
+        // optional: you can handle winner/timing logic here if needed when result.finished === true
+      } catch (err) {
+        console.warn("Engine/animation error:", err);
+      } finally {
+        // ensure UI returns to stopped state after animation finishes or was interrupted
+        this.toggleEngineUI(false);
       }
-    );
+    });
 
+    // Stop button handler: stop animation and call stopEngine shim
     this.stopButton = new Button("B", "stop-engine-btn", "button", async () => {
+      // update UI immediately
       this.toggleEngineUI(false);
 
       try {
@@ -86,31 +79,33 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
         console.warn("stopEngine failed", err);
       }
 
+      // stop animation and reset car position
       stopAnimation(this.carId);
     });
 
+    // initially stop is disabled
     this.stopButton.getElement().disabled = true;
 
-    engineControls.append(
-      this.startButton.getElement(),
-      this.stopButton.getElement()
-    );
+    engineControls.append(this.startButton.getElement(), this.stopButton.getElement());
 
     const visualArea = document.createElement("div");
     visualArea.className = "car__visual-area";
 
     const carIcon = new CarIcon(car.color);
-    const iconElement = carIcon.getElement();
-    this.carVisualElement = iconElement as HTMLElement;
+    const iconWrapper = carIcon.getElement();
 
-    visualArea.append(iconElement);
+    // IMPORTANT: animate the inner <svg> (if present). Fall back to the wrapper when no svg.
+    const svgElement =
+      (iconWrapper.querySelector && (iconWrapper.querySelector("svg") as HTMLElement | null)) || null;
+    this.carVisualElement = (svgElement as HTMLElement) ?? (iconWrapper as HTMLElement);
+
+    visualArea.append(iconWrapper);
 
     this.element.append(managementControls, engineControls, visualArea);
   }
 
   private toggleEngineUI(isStarting: boolean): void {
-    const startButtonElement =
-      this.startButton.getElement() as HTMLButtonElement;
+    const startButtonElement = this.startButton.getElement() as HTMLButtonElement;
     const stopButtonElement = this.stopButton.getElement() as HTMLButtonElement;
 
     if (isStarting) {

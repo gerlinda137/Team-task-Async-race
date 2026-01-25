@@ -1,9 +1,10 @@
+
 export const startEngine = async (carId: number): Promise<{ velocity: number }> => {
     await new Promise((r) => setTimeout(r, 120));
-
-    const base = 180;
+  
+    const base = 180; 
     const variance = (carId % 5) * 30;
-    const velocity = Math.max(50, base + variance);
+    const velocity = Math.max(40, base + variance);
     return { velocity };
   };
   
