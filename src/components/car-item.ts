@@ -3,6 +3,9 @@ import { CarIcon } from "./ui/car-icon";
 import { Button } from "./ui/button";
 import "./car-item.css";
 
+import { startAnimation, stopAnimation } from "../utils/animation";
+import { startEngine, stopEngine } from "../utils/engine-api";
+
 export interface Car {
   name: string;
   color: string;
@@ -17,7 +20,13 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
   private startButton!: Button;
   private stopButton!: Button;
 
-  constructor(car: Car, onDeleted: () => void, onEdited: (car: Car) => void) {
+  private carVisualElement!: HTMLElement;
+
+  constructor(
+    car: Car,
+    onDeleted: (id: number) => void,
+    onEdited: (car: Car) => void
+  ) {
     super("li", "car-list__item");
     this.carId = car.id;
     this.element.id = `car-${car.id}`;
@@ -49,12 +58,36 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     const engineControls = document.createElement("div");
     engineControls.className = "car__engine-controls";
 
-    this.startButton = new Button("A", "start-engine-btn", "button", () =>
-      this.toggleEngineUI(true)
+    this.startButton = new Button(
+      "A",
+      "start-engine-btn",
+      "button",
+      async () => {
+        this.toggleEngineUI(true);
+
+        try {
+          const { velocity } = await startEngine(this.carId);
+
+          await startAnimation(this.carId, this.carVisualElement, velocity);
+        } catch (err) {
+          console.warn("Animation/engine error", err);
+        } finally {
+          this.toggleEngineUI(false);
+        }
+      }
     );
-    this.stopButton = new Button("B", "stop-engine-btn", "button", () =>
-      this.toggleEngineUI(false)
-    );
+
+    this.stopButton = new Button("B", "stop-engine-btn", "button", async () => {
+      this.toggleEngineUI(false);
+
+      try {
+        await stopEngine(this.carId);
+      } catch (err) {
+        console.warn("stopEngine failed", err);
+      }
+
+      stopAnimation(this.carId);
+    });
 
     this.stopButton.getElement().disabled = true;
 
@@ -65,8 +98,12 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
 
     const visualArea = document.createElement("div");
     visualArea.className = "car__visual-area";
+
     const carIcon = new CarIcon(car.color);
-    visualArea.append(carIcon.getElement());
+    const iconElement = carIcon.getElement();
+    this.carVisualElement = iconElement as HTMLElement;
+
+    visualArea.append(iconElement);
 
     this.element.append(managementControls, engineControls, visualArea);
   }
