@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import "./car-item.css";
 
 import { startAnimation, stopAnimation } from "../utils/animation";
-import { startEngine, stopEngine } from "../utils/engine-api";
+import { startEngine, stopEngine } from "../api/engine-api";
 
 export interface Car {
   name: string;
@@ -85,7 +85,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     this.stopButton = new Button("B", "stop-engine-btn", "button", async () => {
       this.toggleEngineUI(false);
       try {
-        await stopEngine();
+        await stopEngine(this.carId);
       } catch (error) {
         console.warn("stopEngine failed", error);
       }
