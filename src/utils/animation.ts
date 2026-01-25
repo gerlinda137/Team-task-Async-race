@@ -1,4 +1,7 @@
-const MS_IN_SEC = 1000;
+const MS_PER_SEC = 1000;
+const ZERO_DISTANCE = 0;
+const INITIAL_PROGRESS = 0;
+const MAX_PROGRESS = 1;
 
 export interface AnimationResult {
   timeMs: number;
@@ -15,68 +18,53 @@ type AnimRecord = {
 
 const animations = new Map<number, AnimRecord>();
 
+const updateFrame = (carId: number, ts: number, fullDistance: number) => {
+  const rec = animations.get(carId);
+  if (!rec) return;
+
+  const elapsed = ts - rec.startTs;
+  const progress = rec.duration === Infinity 
+    ? INITIAL_PROGRESS 
+    : Math.min(elapsed / rec.duration, MAX_PROGRESS);
+    
+  rec.element.style.transform = `translateX(${progress * fullDistance}px)`;
+
+  if (progress < MAX_PROGRESS) {
+    rec.rafId = requestAnimationFrame((newTs) => updateFrame(carId, newTs, fullDistance));
+  } else {
+    finalizeAnimation(carId, fullDistance, true);
+  }
+};
+
+const finalizeAnimation = (carId: number, distance: number, finished: boolean) => {
+  const rec = animations.get(carId);
+  if (!rec) return;
+
+  if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
+  if (finished) rec.element.style.transform = `translateX(${distance}px)`;
+  
+  rec.resolve({ timeMs: rec.duration, finished });
+  animations.delete(carId);
+};
+
 export const startAnimation = (carId: number, element: HTMLElement, velocity: number): Promise<AnimationResult> => {
   const container = element.parentElement as HTMLElement | null;
-  if (!container) {
-    return Promise.reject(new Error("Element has no parent container for animation"));
-  }
+  if (!container) return Promise.reject(new Error("No container"));
 
-  const fullDistance = Math.max(0, container.clientWidth - element.clientWidth);
-  const duration = velocity > 0 ? (fullDistance / velocity) * MS_IN_SEC : Infinity;
-  const startTs = performance.now();
-
-  if (animations.has(carId)) {
-    stopAnimation(carId);
-  }
-
-  let rafId: number | undefined = undefined;
+  const fullDistance = Math.max(ZERO_DISTANCE, container.clientWidth - element.clientWidth);
+  const duration = velocity > ZERO_DISTANCE ? (fullDistance / velocity) * MS_PER_SEC : Infinity;
+  
+  if (animations.has(carId)) stopAnimation(carId);
 
   return new Promise<AnimationResult>((resolve) => {
-    function step(ts: number) {
-      const rec = animations.get(carId);
-      if (!rec) {
-        return;
-      }
-
-      const elapsed = ts - rec.startTs;
-      const progress = rec.duration === Infinity ? 0 : Math.min(elapsed / rec.duration, 1);
-      element.style.transform = `translateX(${progress * fullDistance}px)`;
-
-      if (progress < 1) {
-        rafId = requestAnimationFrame(step);
-        rec.rafId = rafId;
-        animations.set(carId, rec);
-      } else {
-        if (rec.rafId !== null) {
-          cancelAnimationFrame(rec.rafId);
-        }
-        animations.delete(carId);
-        element.style.transform = `translateX(${fullDistance}px)`;
-        resolve({ timeMs: rec.duration, finished: true });
-      }
-    }
-
-    animations.set(carId, {
-      rafId,
-      element,
-      startTs,
-      duration,
-      resolve,
-    });
-
-    rafId = requestAnimationFrame(step);
-    const rec = animations.get(carId);
-    if (rec) {
-      rec.rafId = rafId;
-      animations.set(carId, rec);
-    }
-
-    if (fullDistance === 0) {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      animations.delete(carId);
+    if (fullDistance === ZERO_DISTANCE) {
       element.style.transform = `translateX(0px)`;
-      resolve({ timeMs: 0, finished: true });
+      return resolve({ timeMs: ZERO_DISTANCE, finished: true });
     }
+
+    const rec: AnimRecord = { rafId: null, element, startTs: performance.now(), duration, resolve };
+    animations.set(carId, rec);
+    rec.rafId = requestAnimationFrame((ts) => updateFrame(carId, ts, fullDistance));
   });
 };
 
@@ -84,21 +72,8 @@ export const stopAnimation = (carId: number): void => {
   const rec = animations.get(carId);
   if (!rec) return;
 
-  if (rec.rafId !== null) {
-    cancelAnimationFrame(rec.rafId);
-  }
-
-  try {
-    rec.element.style.transform = "";
-  } catch (error) {
-    console.warn("Could not reset transform on stop:", error);
-  }
-
-  try {
-    rec.resolve({ timeMs: rec.duration, finished: false });
-  } catch (error) {
-    console.log("Could not resolve animation promise on stop:", error);
-  }
-
+  if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
+  rec.element.style.transform = "";
+  rec.resolve({ timeMs: rec.duration, finished: false });
   animations.delete(carId);
 };
