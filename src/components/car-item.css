@@ -1,23 +1,18 @@
-.car-list__item {
-  margin-bottom: 1rem;
-  position: relative;
-  background-color: #ffffff17;
-  border-bottom: 2px solid beige;
-  text-align: left;
-}
-
 .car__title {
   margin: 0;
   margin-bottom: 0.3rem;
   font-size: 1rem;
 }
 
-
+.car__img-wrapper {
+  display: flex;
+}
 
 .car__img-wrapper svg {
   width: 3rem;
   height: 3rem;
-  position: absolute;
-  left: 0;
-  bottom: -11px;
+}
+
+.car__img-wrapper::after {
+  content: none;
 }
