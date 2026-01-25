@@ -78,3 +78,8 @@ export const deleteCar = async (id: number) => {
     throw new Error(`Failed to delete car (${response.status})`);
   }
 };
+
+export const getCar = async (id: number): Promise<{ name: string; color: string; id: number }> => {
+  const response = await fetch(`${BASE_URL}/garage/${id}`);
+  return response.json();
+};
