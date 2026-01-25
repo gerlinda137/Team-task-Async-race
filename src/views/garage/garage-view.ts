@@ -44,7 +44,10 @@ export class GarageView extends BaseComponent {
     this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
       generateCars(GENERATE_CARS_COUNT, () => this.loadPage(this.page)),
     );
-    this.carsList = new CarsList((id) => void this.handleDelete(id));
+    this.carsList = new CarsList(
+      (id) => void this.handleDelete(id),
+      (car) => void this.carForm.setEditMode(car),
+    );
 
     this.element.append(
       this.titleEl,

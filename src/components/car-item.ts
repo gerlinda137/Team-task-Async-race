@@ -11,14 +11,16 @@ export interface Car {
 
 export class CarItem extends BaseComponent<HTMLLIElement> {
   private carId: number;
+  private onEdited: (car: Car) => void;
   private onDeleted: (id: number) => void;
 
-  constructor(car: Car, onDeleted: () => void) {
+  constructor(car: Car, onDeleted: () => void, onEdited: (car: Car) => void) {
     super("li", "car-list__item");
     this.carId = car.id;
     this.element.id = car.id.toString();
-    this.render(car);
+    this.onEdited = onEdited;
     this.onDeleted = onDeleted;
+    this.render(car);
   }
 
   private render(car: Car) {
@@ -26,10 +28,14 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     carTitle.className = "car__title";
     carTitle.textContent = car.name;
     const carIcon = new CarIcon(car.color);
-    const deleteCarButton = new Button("delete car", "", "button", () =>
+    const editCarButton = new Button("edit", "", "button", () =>
+      this.onEdited(car),
+    );
+    const deleteCarButton = new Button("delete", "", "button", () =>
       this.onDeleted(this.carId),
     );
     this.element.append(carTitle);
+    this.element.append(editCarButton.getElement());
     this.element.append(deleteCarButton.getElement());
     this.element.append(carIcon.getElement());
   }

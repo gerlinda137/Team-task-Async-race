@@ -5,6 +5,19 @@
    gap: 0.2em;
  }
 
- .car-form input {}
+ .car-form .car__img-wrapper {
+   width: auto;
+   position: static;
+ }
 
- .car-form input[type='color'] {}
+ .car-form button {
+   padding: 3px 10px;
+ }
+
+ .car-form .car__img-wrapper::after {
+   content: none;
+ }
+
+ .car-form .car__img-wrapper svg {
+   position: static;
+ }
