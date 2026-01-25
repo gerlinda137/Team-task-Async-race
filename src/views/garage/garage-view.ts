@@ -4,6 +4,7 @@ import { CarsList } from "../../components/cars-list";
 import { CarForm } from "../../components/car-form";
 import { Button } from "../../components/ui/button";
 import { generateCars } from "../../utils/generate-cars";
+import state from '../../store';
 
 const CARS_PER_PAGE = 7;
 const GENERATE_CARS_COUNT = 100;
@@ -11,7 +12,7 @@ const GENERATE_CARS_COUNT = 100;
 export class GarageView extends BaseComponent {
   private carForm: CarForm;
   private generate100CarsBtn: Button;
-  private page = 1;
+  private page: number;
   private totalCount = 0;
   private totalPages = 0;
 
@@ -27,6 +28,7 @@ export class GarageView extends BaseComponent {
 
     this.prevBtn.textContent = "Prev";
     this.nextBtn.textContent = "Next";
+    this.page = state.garagePage;
 
     this.prevBtn.addEventListener(
       "click",
@@ -53,14 +55,14 @@ export class GarageView extends BaseComponent {
       this.nextBtn,
       this.carsList.getElement(),
     );
-    void this.loadPage(1);
+    void this.loadPage(this.page);
   }
 
   private async loadPage(page: number): Promise<void> {
     const { cars, totalCount } = await getCars(page);
 
     this.page = page;
-
+    state.garagePage = this.page;
     this.totalCount = Number(totalCount) || 0;
     this.totalPages = Math.max(1, Math.ceil(this.totalCount / CARS_PER_PAGE));
     this.titleEl.textContent = `Garage ${totalCount}`;
