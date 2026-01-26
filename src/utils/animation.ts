@@ -90,9 +90,12 @@ export const stopAnimation = (carId: number): void => {
   if (!rec) return;
 
   if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
-  rec.element.style.transform = "";
   rec.resolve({ timeMs: rec.duration, finished: false });
   animations.delete(carId);
+};
+
+export const resetTransform = (element: HTMLElement): void => {
+  element.style.transform = "translateX(0px)";
 };
 
 export const cancelAnimation = (carId: number): void => {

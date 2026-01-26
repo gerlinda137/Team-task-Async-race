@@ -6,6 +6,7 @@
   display: flex;
   justify-content: center;
   gap: 0.3em;
+  margin-bottom: 1em;
 }
 
 .garage-view button {
@@ -63,8 +64,4 @@
     padding: 0.3em;
   }
 
-}
-
-.garage__header .car__img-wrapper svg {
-  background-color: #333;
 }

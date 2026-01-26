@@ -24,7 +24,8 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
   private onCreated?: () => void;
   constructor(onCreated?: () => void) {
     super("form", "car-form");
-
+    this.colorInput.setColor("#d01e1e");
+    this.previewIcon.setColor("#d01e1e");
     this.onCreated = onCreated;
     this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
       generateCars(GENERATE_CARS_COUNT, () => this.onCreated?.()),
