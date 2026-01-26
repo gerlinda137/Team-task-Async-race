@@ -54,7 +54,9 @@ export const startAnimation = (
   element: HTMLElement,
   timeMs: number,
 ): Promise<AnimationResult> => {
-  const container = element.parentElement as HTMLElement | null;
+  const svgContainer =
+    element.closest<HTMLElement>(".car__svg-container") ?? element;
+  const container = svgContainer.parentElement as HTMLElement | null;
   if (!container) return Promise.reject(new Error("No container"));
 
   const fullDistance = Math.max(
@@ -74,7 +76,7 @@ export const startAnimation = (
 
     const rec: AnimRecord = {
       rafId: null,
-      element,
+      element: svgContainer,
       startTs: performance.now(),
       duration,
       fullDistance,
@@ -95,7 +97,10 @@ export const stopAnimation = (carId: number): void => {
 };
 
 export const resetTransform = (element: HTMLElement): void => {
-  element.style.transform = "translateX(0px)";
+  const svgContainer =
+    element.closest<HTMLElement>(".car__svg-container") ?? element;
+
+  svgContainer.style.transform = "translateX(0px)";
 };
 
 export const cancelAnimation = (carId: number): void => {
