@@ -4,13 +4,17 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 export class CarIcon extends BaseComponent<HTMLDivElement> {
   private bodyPath: SVGPathElement;
+  private svgContainer: HTMLDivElement;
 
   constructor(color: string) {
     super("div", "car__img-wrapper");
 
+    this.svgContainer = document.createElement("div");
+    this.svgContainer.className = "car__svg-container";
     const { svg, path } = this.createSvg(color);
     this.bodyPath = path;
-    this.element.append(svg);
+    this.svgContainer.append(svg);
+    this.element.append(this.svgContainer);
   }
 
   public setColor(color: string): void {
