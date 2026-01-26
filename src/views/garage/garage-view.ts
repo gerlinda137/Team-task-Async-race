@@ -142,6 +142,7 @@ export class GarageView extends BaseComponent {
   private async resetAll(): Promise<void> {
     const items = this.carsList.getCarItems();
     await Promise.allSettled(items.map((carItem) => carItem.reset()));
+    this.setRaceControlsState(false, false);
   }
 
   private setRaceControlsState(isRacing: boolean, canReset: boolean): void {
