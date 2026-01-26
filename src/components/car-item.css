@@ -1,20 +1,21 @@
 .car__title {
-  margin: 0;
-  margin-bottom: 0.3rem;
+  margin: 0 0 0.3rem;
   font-size: 1rem;
 }
 
 .car__visual-area {
   position: relative;
   width: 100%;
-  overflow: hidden;
   min-height: 40px;
   padding-top: 0.5rem;
+  overflow: hidden;
 }
+
 
 .car__img-wrapper {
   display: flex;
 }
+
 
 .car__img-wrapper::after {
   content: none;
@@ -22,27 +23,30 @@
 
 
 
-.car--broken {
-  opacity: 0.6;
-  position: relative;
-}
-
 .car__svg-container {
   position: relative;
+  display: flex;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  display: flex;
 }
 
 .car__svg-container svg {
   width: 3rem;
   height: 3rem;
-  left: 0;
-  /* transform: translateY(25%); */
   will-change: transform;
-  transition: transform 0s linear;
+  transform: translateY(25%) rotate(0deg);
+  transform-origin: center center;
+  transition: transform 300ms ease;
 }
+
+
+
+.car--broken {
+  position: relative;
+  opacity: 0.6;
+}
+
 
 .car--broken .car__svg-container::before {
   content: "💥";
@@ -50,11 +54,11 @@
   right: -35%;
   top: 35%;
   transform: translate(-50%);
-  font-size: 30px;
   z-index: 10;
+  font-size: 30px;
 }
 
+
 .car--broken .car__svg-container svg {
-  rotate: 30deg;
-  transition: transform 300ms ease;
+  transform: translateY(25%) rotate(30deg);
 }
