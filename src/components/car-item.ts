@@ -83,11 +83,12 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     return new Button("A", "start-engine-btn", "button", async () => {
       this.toggleEngineUI(true);
       try {
-        const { velocity } = await startEngine(this.carId);
+        const { velocity, distance } = await startEngine(this.carId);
+        const timeMs = distance / velocity;
         const animationPromise = startAnimation(
           this.carId,
           this.carVisualElement,
-          velocity,
+          timeMs,
         );
         await driveEngine(this.carId);
         await animationPromise;
