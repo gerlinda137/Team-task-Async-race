@@ -81,6 +81,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
 
   private createStartButton(): Button {
     return new Button("A", "start-engine-btn", "button", async () => {
+      this.unmarkBroken();
       this.toggleEngineUI(true);
       try {
         const { velocity, distance } = await startEngine(this.carId);
@@ -95,6 +96,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
       } catch (error) {
         console.warn("Engine broken:", error);
         cancelAnimation(this.carId);
+        this.markBroken();
       } finally {
         this.toggleEngineUI(false);
       }
@@ -103,6 +105,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
 
   private createStopButton(): Button {
     return new Button("B", "stop-engine-btn", "button", async () => {
+      this.unmarkBroken();
       this.toggleEngineUI(false);
       try {
         await stopEngine(this.carId);
@@ -133,5 +136,13 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
 
     startButton.disabled = isStarting;
     stopButton.disabled = !isStarting;
+  }
+
+  private markBroken(): void {
+    this.element.classList.add("car--broken");
+  }
+
+  private unmarkBroken(): void {
+    this.element.classList.remove("car--broken");
   }
 }

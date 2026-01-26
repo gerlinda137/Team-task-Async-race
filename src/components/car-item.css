@@ -13,10 +13,6 @@
 }
 
 .car__img-wrapper {
-  /* position: relative;
-  display: inline-block;
-  min-height: 40px;
-  width: 95%; */
   display: flex;
 }
 
@@ -32,4 +28,18 @@
   bottom: 0;
   will-change: transform;
   transition: transform 0s linear;
+}
+
+.car--broken {
+  opacity: 0.6;
+  position: relative;
+}
+
+.car--broken::before {
+  content: "⚠️";
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translate(-50%);
+  font-size: 20px;
 }
