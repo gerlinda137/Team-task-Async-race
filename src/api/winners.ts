@@ -10,10 +10,10 @@ export const getWinners = async (
   page: number,
   limit: number = WINNERS_PER_PAGE,
   sort: string = "id",
-  order: string = "ASC"
+  order: string = "ASC",
 ): Promise<WinnersResponse> => {
   const response = await fetch(
-    `${BASE_URL}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`
+    `${BASE_URL}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`,
   );
 
   return {
@@ -42,7 +42,7 @@ export const createWinner = async (winner: {
 
 export const updateWinner = async (
   id: number,
-  winner: { wins: number; time: number }
+  winner: { wins: number; time: number },
 ) => {
   const response = await fetch(`${BASE_URL}/winners/${id}`, {
     method: "PUT",

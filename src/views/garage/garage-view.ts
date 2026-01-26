@@ -5,6 +5,7 @@ import { CarForm } from "../../components/car-form";
 import state from "../../store";
 import { Button } from "../../components/ui/button";
 import "./garage-view.css";
+import { updateWinnerAfterRace } from "../../utils/save-race-winner";
 
 const CARS_PER_PAGE = 7;
 
@@ -102,7 +103,12 @@ export class GarageView extends BaseComponent {
     try {
       const winner = await Promise.any(promises);
       alert(`Winner: ${winner.name} — ${(winner.timeMs / 1000).toFixed(2)}s`);
+      await updateWinnerAfterRace(
+        winner.id,
+        +(winner.timeMs / 1000).toFixed(2),
+      );
     } catch (error) {
+      alert("No winner (all cars broken).");
       console.warn("No winner (all cars broken).", error);
       throw new Error("No winner (all cars broken)");
     }
