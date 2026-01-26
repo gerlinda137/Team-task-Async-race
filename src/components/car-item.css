@@ -21,8 +21,6 @@
   content: none;
 }
 
-
-
 .car__svg-container {
   position: relative;
   display: flex;
@@ -34,31 +32,4 @@
 .car__svg-container svg {
   width: 3rem;
   height: 3rem;
-  will-change: transform;
-  transform: translateY(25%) rotate(0deg);
-  transform-origin: center center;
-  transition: transform 300ms ease;
-}
-
-
-
-.car--broken {
-  position: relative;
-  opacity: 0.6;
-}
-
-
-.car--broken .car__svg-container::before {
-  content: "💥";
-  position: absolute;
-  right: -35%;
-  top: 35%;
-  transform: translate(-50%);
-  z-index: 10;
-  font-size: 30px;
-}
-
-
-.car--broken .car__svg-container svg {
-  transform: translateY(25%) rotate(30deg);
 }
