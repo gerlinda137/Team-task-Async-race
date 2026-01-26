@@ -33,13 +33,36 @@
 
 .garage__header {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 1em;
   align-items: center;
   background: #1f1f1f;
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 20px;
   border: 1px solid #333;
+}
+
+@media (max-width: 750px) {
+
+
+
+  .garage__heder {
+    gap: 0.3em;
+  }
+
+  .garage__header .car__img-wrapper {
+    scale: 0.7;
+  }
+
+  .car-form {
+    gap: 0.3em;
+  }
+
+  .car-form button {
+    padding: 0.3em;
+  }
+
 }
 
 .garage__header .car__img-wrapper svg {
