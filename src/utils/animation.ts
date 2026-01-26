@@ -75,7 +75,7 @@ export const startAnimation = (
     const duration = timeMs > ZERO_DISTANCE ? timeMs : Infinity;
 
     const rec: AnimRecord = {
-      rafId: null,
+      rafId: undefined,
       element: svgContainer,
       startTs: performance.now(),
       duration,
