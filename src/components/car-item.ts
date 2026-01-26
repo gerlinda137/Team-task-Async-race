@@ -3,8 +3,12 @@ import { CarIcon } from "./ui/car-icon";
 import { Button } from "./ui/button";
 import "./car-item.css";
 
-import { startAnimation, stopAnimation } from "../utils/animation";
-import { startEngine, stopEngine } from "../api/engine-api";
+import {
+  startAnimation,
+  stopAnimation,
+  cancelAnimation,
+} from "../utils/animation";
+import { startEngine, stopEngine, driveEngine } from "../api/engine-api";
 
 export interface Car {
   name: string;
@@ -24,7 +28,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
   constructor(
     car: Car,
     onDeleted: (id: number) => void,
-    onEdited: (car: Car) => void
+    onEdited: (car: Car) => void,
   ) {
     super("li", "car-list__item");
     this.carId = car.id;
@@ -38,7 +42,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     this.element.append(
       this.renderManagement(car),
       this.renderEngineControls(),
-      this.renderVisualArea(car.color)
+      this.renderVisualArea(car.color),
     );
   }
 
@@ -47,10 +51,10 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     container.className = "car__management";
 
     const editButton = new Button("edit", "edit-btn", "button", () =>
-      this.onEdited(car)
+      this.onEdited(car),
     );
     const deleteButton = new Button("delete", "delete-btn", "button", () =>
-      this.onDeleted(this.carId)
+      this.onDeleted(this.carId),
     );
 
     const title = document.createElement("h2");
@@ -64,25 +68,40 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
   private renderEngineControls(): HTMLElement {
     const container = document.createElement("div");
     container.className = "car__engine-controls";
+    this.startButton = this.createStartButton();
+    this.stopButton = this.createStopButton();
 
-    this.startButton = new Button(
-      "A",
-      "start-engine-btn",
-      "button",
-      async () => {
-        this.toggleEngineUI(true);
-        try {
-          const { velocity } = await startEngine(this.carId);
-          await startAnimation(this.carId, this.carVisualElement, velocity);
-        } catch (error) {
-          console.warn("Engine/animation error:", error);
-        } finally {
-          this.toggleEngineUI(false);
-        }
-      }
+    this.stopButton.getElement().disabled = true;
+    container.append(
+      this.startButton.getElement(),
+      this.stopButton.getElement(),
     );
+    return container;
+  }
 
-    this.stopButton = new Button("B", "stop-engine-btn", "button", async () => {
+  private createStartButton(): Button {
+    return new Button("A", "start-engine-btn", "button", async () => {
+      this.toggleEngineUI(true);
+      try {
+        const { velocity } = await startEngine(this.carId);
+        const animationPromise = startAnimation(
+          this.carId,
+          this.carVisualElement,
+          velocity,
+        );
+        await driveEngine(this.carId);
+        await animationPromise;
+      } catch (error) {
+        console.warn("Engine broken:", error);
+        cancelAnimation(this.carId);
+      } finally {
+        this.toggleEngineUI(false);
+      }
+    });
+  }
+
+  private createStopButton(): Button {
+    return new Button("B", "stop-engine-btn", "button", async () => {
       this.toggleEngineUI(false);
       try {
         await stopEngine(this.carId);
@@ -91,13 +110,6 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
       }
       stopAnimation(this.carId);
     });
-
-    this.stopButton.getElement().disabled = true;
-    container.append(
-      this.startButton.getElement(),
-      this.stopButton.getElement()
-    );
-    return container;
   }
 
   private renderVisualArea(color: string): HTMLElement {
