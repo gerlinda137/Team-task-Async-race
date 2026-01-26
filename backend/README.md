@@ -8,7 +8,7 @@ Api for Rolling Scopes School task "Async Race".
 - Go to downloaded folder: `$ cd async-race-api`.
 - Install dependencies: `$ npm install`.
 - Start server: `$ npm start`.
-- Now you can send requests to the address: `http://127.0.0.1:3000`.
+- Now you can send requests to the address: `https://backend-qroh.onrender.com`.
 
 ## Usage
 
