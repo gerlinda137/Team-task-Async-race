@@ -5,6 +5,7 @@ import "./car-list.css";
 export class CarsList extends BaseComponent<HTMLUListElement> {
   private onEdited: (car: Car) => void;
   private onDeleted: (id: number) => void;
+  private carItems: CarItem[] = [];
   constructor(onDeleted: (id: number) => void, onEdited: (car: Car) => void) {
     super("ul", "car-list");
     this.onEdited = onEdited;
@@ -19,7 +20,12 @@ export class CarsList extends BaseComponent<HTMLUListElement> {
         () => this.onDeleted(car.id),
         () => this.onEdited(car),
       );
+      this.carItems.push(carItem);
       this.element.append(carItem.getElement());
     }
+  }
+
+  public getCarItems(): CarItem[] {
+    return this.carItems;
   }
 }

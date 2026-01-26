@@ -18,6 +18,7 @@ export interface Car {
 
 export class CarItem extends BaseComponent<HTMLLIElement> {
   private carId: number;
+  private carName: string;
   private onEdited: (car: Car) => void;
   private onDeleted: (id: number) => void;
 
@@ -32,6 +33,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
   ) {
     super("li", "car-list__item");
     this.carId = car.id;
+    this.carName = car.name;
     this.element.id = `car-${car.id}`;
     this.onEdited = onEdited;
     this.onDeleted = onDeleted;
@@ -79,40 +81,51 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
     return container;
   }
 
+  public async start(): Promise<{ id: number; timeMs: number; name: string }> {
+    this.unmarkBroken();
+    this.toggleEngineUI(true);
+
+    try {
+      const { velocity, distance } = await startEngine(this.carId);
+      const timeMs = distance / velocity;
+      const animationPromise = startAnimation(
+        this.carId,
+        this.carVisualElement,
+        timeMs,
+      );
+      await driveEngine(this.carId);
+      await animationPromise;
+      return { id: this.carId, timeMs, name: this.carName };
+    } catch (error) {
+      console.warn("Engine broken:", error);
+      cancelAnimation(this.carId);
+      this.markBroken();
+      throw error;
+    } finally {
+      this.toggleEngineUI(false);
+    }
+  }
+
+  public async reset(): Promise<void> {
+    this.unmarkBroken();
+    this.toggleEngineUI(false);
+    try {
+      await stopEngine(this.carId);
+    } catch (error) {
+      console.warn("stopEngine failed", error);
+    }
+    stopAnimation(this.carId);
+  }
+
   private createStartButton(): Button {
     return new Button("A", "start-engine-btn", "button", async () => {
-      this.unmarkBroken();
-      this.toggleEngineUI(true);
-      try {
-        const { velocity, distance } = await startEngine(this.carId);
-        const timeMs = distance / velocity;
-        const animationPromise = startAnimation(
-          this.carId,
-          this.carVisualElement,
-          timeMs,
-        );
-        await driveEngine(this.carId);
-        await animationPromise;
-      } catch (error) {
-        console.warn("Engine broken:", error);
-        cancelAnimation(this.carId);
-        this.markBroken();
-      } finally {
-        this.toggleEngineUI(false);
-      }
+      await this.start();
     });
   }
 
   private createStopButton(): Button {
     return new Button("B", "stop-engine-btn", "button", async () => {
-      this.unmarkBroken();
-      this.toggleEngineUI(false);
-      try {
-        await stopEngine(this.carId);
-      } catch (error) {
-        console.warn("stopEngine failed", error);
-      }
-      stopAnimation(this.carId);
+      await this.reset();
     });
   }
 

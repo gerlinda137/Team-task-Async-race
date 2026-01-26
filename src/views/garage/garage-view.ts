@@ -16,9 +16,12 @@ export class GarageView extends BaseComponent {
 
   private titleEl = document.createElement("h1");
   private pageEl = document.createElement("h2");
+  private garageHeader = document.createElement("header");
   private paginationEl = document.createElement("div");
   private prevBtn: Button;
   private nextBtn: Button;
+  private raceBtn!: Button;
+  private resetBtn!: Button;
 
   private carsList: CarsList;
 
@@ -44,6 +47,12 @@ export class GarageView extends BaseComponent {
     this.titleEl.textContent = `Garage ${this.totalCount}`;
 
     this.carForm = new CarForm(() => this.loadPage(this.page));
+
+    this.garageHeader.className = "garage__header";
+    this.garageHeader.append(
+      this.carForm.getElement(),
+      this.renderRaceControls(),
+    );
     this.carsList = new CarsList(
       (id) => void this.handleDelete(id),
       (car) => void this.carForm.setEditMode(car),
@@ -56,7 +65,7 @@ export class GarageView extends BaseComponent {
 
     this.element.append(
       this.titleEl,
-      this.carForm.getElement(),
+      this.garageHeader,
       this.pageEl,
       this.paginationEl,
       this.carsList.getElement(),
@@ -85,5 +94,39 @@ export class GarageView extends BaseComponent {
   private async handleDelete(id: number): Promise<void> {
     await deleteCar(id);
     await this.loadPage(this.page);
+  }
+
+  private async raceAll(): Promise<void> {
+    const carItems = this.carsList.getCarItems();
+    const promises = carItems.map((carItem) => carItem.start());
+    try {
+      const winner = await Promise.any(promises);
+      alert(`Winner: ${winner.name} — ${(winner.timeMs / 1000).toFixed(2)}s`);
+    } catch (error) {
+      console.warn("No winner (all cars broken).", error);
+      throw new Error("No winner (all cars broken)");
+    }
+  }
+
+  private async resetAll(): Promise<void> {
+    const items = this.carsList.getCarItems();
+    await Promise.allSettled(items.map((carItem) => carItem.reset()));
+  }
+
+  private renderRaceControls(): HTMLElement {
+    const container = document.createElement("div");
+    container.className = "garage__race-controls";
+
+    this.raceBtn = new Button("Race", "race-btn", "button", () => {
+      void this.raceAll();
+    });
+
+    this.resetBtn = new Button("Reset", "reset-btn", "button", () => {
+      void this.resetAll();
+    });
+
+    container.append(this.raceBtn.getElement(), this.resetBtn.getElement());
+
+    return container;
   }
 }
