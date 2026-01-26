@@ -102,7 +102,7 @@ async function runTests() {
   await testStopAnimation();
   await testZeroDistance();
   await testAnimationProgress();
-  console.log("All tests passed!");
+  console.log("All tests passed ✓");
 }
 
 await runTests();
