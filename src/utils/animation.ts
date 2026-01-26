@@ -8,7 +8,7 @@ export interface AnimationResult {
 }
 
 type AnimRecord = {
-  rafId: number | null;
+  rafId: number | undefined;
   element: HTMLElement;
   startTs: number;
   duration: number;
@@ -41,7 +41,7 @@ const finalizeAnimation = (carId: number, finished: boolean) => {
   const rec = animations.get(carId);
   if (!rec) return;
 
-  if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
+  if (rec.rafId !== undefined) cancelAnimationFrame(rec.rafId);
   if (finished)
     rec.element.style.transform = `translateX(${rec.fullDistance}px)`;
 
@@ -52,7 +52,7 @@ const finalizeAnimation = (carId: number, finished: boolean) => {
 export const startAnimation = (
   carId: number,
   element: HTMLElement,
-  timeMs: number,
+  timeMs: number
 ): Promise<AnimationResult> => {
   const svgContainer =
     element.closest<HTMLElement>(".car__svg-container") ?? element;
@@ -61,7 +61,7 @@ export const startAnimation = (
 
   const fullDistance = Math.max(
     ZERO_DISTANCE,
-    container.clientWidth - element.clientWidth,
+    container.clientWidth - element.clientWidth
   );
 
   if (animations.has(carId)) stopAnimation(carId);
@@ -75,7 +75,7 @@ export const startAnimation = (
     const duration = timeMs > ZERO_DISTANCE ? timeMs : Infinity;
 
     const rec: AnimRecord = {
-      rafId: null,
+      rafId: undefined,
       element: svgContainer,
       startTs: performance.now(),
       duration,
@@ -91,7 +91,7 @@ export const stopAnimation = (carId: number): void => {
   const rec = animations.get(carId);
   if (!rec) return;
 
-  if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
+  if (rec.rafId !== undefined) cancelAnimationFrame(rec.rafId);
   rec.resolve({ timeMs: rec.duration, finished: false });
   animations.delete(carId);
 };
@@ -107,7 +107,7 @@ export const cancelAnimation = (carId: number): void => {
   const rec = animations.get(carId);
   if (!rec) return;
 
-  if (rec.rafId !== null) cancelAnimationFrame(rec.rafId);
+  if (rec.rafId !== undefined) cancelAnimationFrame(rec.rafId);
   rec.resolve({ timeMs: rec.duration, finished: false });
   animations.delete(carId);
 };

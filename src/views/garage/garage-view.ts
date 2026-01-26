@@ -2,7 +2,7 @@ import { BaseComponent } from "../../components/ui/base-component";
 import { deleteCar, getCars } from "../../api/garage";
 import { CarsList } from "../../components/cars-list";
 import { CarForm } from "../../components/car-form";
-import state from "../../store";
+import state from "../../store/store";
 import { Button } from "../../components/ui/button";
 import "./garage-view.css";
 import { updateWinnerAfterRace } from "../../utils/save-race-winner";

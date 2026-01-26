@@ -3,7 +3,7 @@ import { Button } from "../../components/ui/button";
 import { CarIcon } from "../../components/ui/car-icon";
 import { getWinners, WINNERS_PER_PAGE } from "../../api/winners";
 import { getCar } from "../../api/garage";
-import state from "../../store";
+import state from "../../store/store";
 import "./index.css";
 
 const PAGE_NEXT = 1;

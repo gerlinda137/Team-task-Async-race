@@ -15,9 +15,9 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
   private previewIcon = new CarIcon("#000000");
   private colorInput = new ColorInput(
     "create-color-input",
-    this.handleColorChange.bind(this),
+    this.handleColorChange.bind(this)
   );
-  private editingCarId: number | null = null;
+  private editingCarId: number | undefined = undefined;
   private submitBtn = new Button("create car", undefined, "submit");
   private generate100CarsBtn: Button;
 
@@ -28,7 +28,7 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
     this.previewIcon.setColor("#d01e1e");
     this.onCreated = onCreated;
     this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
-      generateCars(GENERATE_CARS_COUNT, () => this.onCreated?.()),
+      generateCars(GENERATE_CARS_COUNT, () => this.onCreated?.())
     );
     this.element.append(
       this.previewIcon.getElement(),
@@ -36,11 +36,11 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
       this.colorInput.getElement(),
 
       this.submitBtn.getElement(),
-      this.generate100CarsBtn.getElement(),
+      this.generate100CarsBtn.getElement()
     );
     this.element.addEventListener(
       "submit",
-      (event) => void this.handleSubmit(event),
+      (event) => void this.handleSubmit(event)
     );
   }
 
@@ -61,12 +61,12 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
 
     const name = this.textInput.getValue().trim();
     const color = this.colorInput.getColor();
-    await (this.editingCarId === null
+    await (this.editingCarId === undefined
       ? createCar(name, color)
       : editCar(name, color, this.editingCarId));
 
     this.textInput.setValue("");
-    this.editingCarId = null;
+    this.editingCarId = undefined;
     this.submitBtn.getElement().textContent = "create car";
     this.onCreated?.();
   }
