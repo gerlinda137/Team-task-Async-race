@@ -7,6 +7,7 @@ import {
   startAnimation,
   stopAnimation,
   cancelAnimation,
+  resetTransform,
 } from "../utils/animation";
 import { startEngine, stopEngine, driveEngine } from "../api/engine-api";
 
@@ -115,6 +116,7 @@ export class CarItem extends BaseComponent<HTMLLIElement> {
       console.warn("stopEngine failed", error);
     }
     stopAnimation(this.carId);
+    resetTransform(this.carVisualElement);
   }
 
   private createStartButton(): Button {
