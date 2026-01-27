@@ -1,6 +1,9 @@
 import { BaseComponent } from "./base-component";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+const RADIX_BASE = 36;
+const ID_START_INDEX = 2;
+const ID_END_INDEX = 9;
 
 export class CarIcon extends BaseComponent<HTMLDivElement> {
   private bodyPath: SVGPathElement;
@@ -26,10 +29,22 @@ export class CarIcon extends BaseComponent<HTMLDivElement> {
     path: SVGPathElement;
   } {
     const svg = document.createElementNS(SVG_NS, "svg");
-    svg.setAttribute("width", "256");
-    svg.setAttribute("height", "256");
-    svg.setAttribute("viewBox", "0 0 256 256");
-    svg.setAttribute("aria-hidden", "true");
+    const randomPart = Math.random()
+      .toString(RADIX_BASE)
+      .slice(ID_START_INDEX, ID_END_INDEX);
+    const uniqueId = `car-icon-${randomPart}`;
+
+    svg.setAttribute("width", "80");
+    svg.setAttribute("height", "40");
+    svg.setAttribute("viewBox", "0 0 90 90");
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-labelledby", uniqueId);
+
+    const title = document.createElementNS(SVG_NS, "title");
+    title.id = uniqueId;
+    title.textContent = `Racing car with color ${color}`;
+    svg.append(title);
+
     const path = document.createElementNS(SVG_NS, "path");
     path.setAttribute(
       "d",
@@ -37,12 +52,13 @@ export class CarIcon extends BaseComponent<HTMLDivElement> {
         "M 43.269 26.602 c 7.065 0 13.848 2.949 18.676 8.094 H 39.464 l -3.267 -8.068 c 0.275 -0.009 0.55 -0.026 0.826 -0.026 H 43.269 z " +
         "M 32.08 27.118 l 3.068 7.578 H 18.972 C 22.429 30.813 27.018 28.169 32.08 27.118 z " +
         "M 19.767 63.397 c -3.652 0 -6.623 -2.971 -6.623 -6.622 c 0 -3.652 2.971 -6.623 6.623 -6.623 s 6.623 2.971 6.623 6.623 C 26.39 60.427 23.419 63.397 19.767 63.397 z " +
-        "M 70.738 63.397 c -3.652 0 -6.623 -2.971 -6.623 -6.622 c 0 -3.652 2.971 -6.623 6.623 -6.623 c 3.651 0 6.622 2.971 6.622 6.623 C 77.36 60.427 74.39 63.397 70.738 63.397 z",
+        "M 70.738 63.397 c -3.652 0 -6.623 -2.971 -6.623 -6.622 c 0 -3.652 2.971 -6.623 6.623 -6.623 c 3.651 0 6.622 2.971 6.622 6.623 C 77.36 60.427 74.39 63.397 70.738 63.397 z"
     );
+
     const group = document.createElementNS(SVG_NS, "g");
     group.setAttribute(
       "transform",
-      "translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)",
+      "translate(1.4065934065934016 1.4065934065934016) scale(1 1)"
     );
     path.setAttribute("fill", color);
     group.append(path);

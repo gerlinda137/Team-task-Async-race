@@ -2,6 +2,8 @@ import './style.css';
 import { Header } from './components/header';
 import { GarageView, WinnersView } from './views';
 
+document.documentElement.lang = 'en';
+
 class App {
   private root: HTMLElement;
   private header: Header;
