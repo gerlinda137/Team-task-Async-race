@@ -22,22 +22,42 @@ export class CarForm extends BaseComponent<HTMLFormElement> {
   private generate100CarsBtn: Button;
 
   private onCreated?: () => void;
+
   constructor(onCreated?: () => void) {
     super("form", "car-form");
+
     this.colorInput.setColor("#d01e1e");
     this.previewIcon.setColor("#d01e1e");
     this.onCreated = onCreated;
+
     this.generate100CarsBtn = new Button("create 100 cars", "", "button", () =>
       generateCars(GENERATE_CARS_COUNT, () => this.onCreated?.())
     );
+
+    const colorInputElement = this.colorInput.getElement();
+    const nameInputElement = this.textInput.getElement();
+
+    const actualColorInput =
+      colorInputElement.tagName === "INPUT"
+        ? colorInputElement
+        : colorInputElement.querySelector("input");
+    const actualNameInput =
+      nameInputElement.tagName === "INPUT"
+        ? nameInputElement
+        : nameInputElement.querySelector("input");
+
+    if (actualColorInput)
+      actualColorInput.setAttribute("aria-label", "Select car color");
+    if (actualNameInput) actualNameInput.setAttribute("aria-label", "Car name");
+
     this.element.append(
       this.previewIcon.getElement(),
       this.textInput.getElement(),
       this.colorInput.getElement(),
-
       this.submitBtn.getElement(),
       this.generate100CarsBtn.getElement()
     );
+
     this.element.addEventListener(
       "submit",
       (event) => void this.handleSubmit(event)
