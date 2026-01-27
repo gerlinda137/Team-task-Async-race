@@ -1,4 +1,4 @@
-const BASE_URL = "https://backend-qroh.onrender.com";
+const BASE_URL = "http://127.0.0.1:3000";
 const CARS_PER_PAGE = 7;
 
 export interface GarageResponse {
@@ -79,7 +79,9 @@ export const deleteCar = async (id: number) => {
   }
 };
 
-export const getCar = async (id: number): Promise<{ name: string; color: string; id: number }> => {
+export const getCar = async (
+  id: number,
+): Promise<{ name: string; color: string; id: number }> => {
   const response = await fetch(`${BASE_URL}/garage/${id}`);
   return response.json();
 };
