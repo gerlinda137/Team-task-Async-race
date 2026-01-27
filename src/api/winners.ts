@@ -1,4 +1,4 @@
-const BASE_URL = "https://backend-qroh.onrender.com";
+const BASE_URL = "http://127.0.0.1:3000";
 export const WINNERS_PER_PAGE = 10;
 
 export interface WinnersResponse {
