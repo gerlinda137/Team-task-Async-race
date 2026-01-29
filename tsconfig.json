@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    /* Base Options */
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -18,15 +19,18 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
-    /* Linting */
+    /* Linting / Strictness */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts"
   ]
 }

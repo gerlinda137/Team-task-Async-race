@@ -1,0 +1,65 @@
+.garage-view {
+  bottom: unset;
+}
+
+.garage-view .pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.3em;
+  margin-bottom: 1em;
+}
+
+.garage-view button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+
+.garage-view button:hover:not(:disabled) {
+  background: #444;
+}
+
+.garage-view button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.garage__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  background: #1f1f1f;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #333;
+}
+
+@media (max-width: 750px) {
+
+  .garage__heder {
+    gap: 0.3em;
+  }
+
+  .garage__header .car__img-wrapper {
+    scale: 0.7;
+  }
+
+  .car-form {
+    gap: 0.3em;
+  }
+
+  .car-form button {
+    padding: 0.3em;
+  }
+
+}
