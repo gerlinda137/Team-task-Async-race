@@ -5,6 +5,10 @@ class MockTextInput {
   public className = "";
   public placeholder = "";
   public value = "";
+
+  public addEventListener(): void {
+    // no-op
+  }
 }
 
 globalThis.document = {
@@ -21,33 +25,40 @@ async function runTextInputTests(): Promise<void> {
   const TEST_ID = "car-name-input";
   const TEST_VALUE = "Tesla Model S";
 
+  localStorage.clear();
+
   const textInput = new TextInput(TEST_PLACEHOLDER, TEST_ID);
   const element = textInput.getElement() as unknown as MockTextInput;
 
   console.assert(
     element.placeholder === TEST_PLACEHOLDER,
-    "Error: Placeholder was not set correctly"
+    "Error: Placeholder was not set correctly",
   );
   console.assert(element.id === TEST_ID, "Error: ID was not set correctly");
   console.assert(
     element.className === "input-text",
-    "Error: CSS class name mismatch"
+    "Error: CSS class name mismatch",
   );
 
   textInput.setValue(TEST_VALUE);
   console.assert(
     element.value === TEST_VALUE,
-    "Error: Internal element value was not updated"
+    "Error: Internal element value was not updated",
   );
   console.assert(
     textInput.getValue() === TEST_VALUE,
-    "Error: getValue did not return the correct value"
+    "Error: getValue did not return the correct value",
   );
 
-  textInput.setValue("");
+  textInput.clear();
   console.assert(
     textInput.getValue() === "",
-    "Error: Failed to clear the input value"
+    "Error: Failed to clear the input value",
+  );
+
+  console.assert(
+    localStorage.getItem(TEST_ID) === null,
+    "Error: clear() should remove value from localStorage",
   );
 
   console.log("Finished text-input.ts tests ✓");

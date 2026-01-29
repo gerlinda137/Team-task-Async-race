@@ -1,5 +1,38 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 
+class LocalStorageMock {
+  private store = new Map<string, string>();
+
+  public getItem(key: string): string | null {
+    return this.store.has(key) ? (this.store.get(key) as string) : null;
+  }
+
+  public setItem(key: string, value: string): void {
+    this.store.set(key, String(value));
+  }
+
+  public removeItem(key: string): void {
+    this.store.delete(key);
+  }
+
+  public clear(): void {
+    this.store.clear();
+  }
+
+  public key(index: number): string | null {
+    return [...this.store.keys()][index] ?? null;
+  }
+
+  public get length(): number {
+    return this.store.size;
+  }
+}
+
+if (!("localStorage" in globalThis)) {
+  (globalThis as unknown as { localStorage: Storage }).localStorage =
+    new LocalStorageMock() as unknown as Storage;
+}
+
 const MS_IN_SECOND = 1000;
 const DECIMAL_PLACES = 2;
 
@@ -29,7 +62,9 @@ async function startTestRunner(): Promise<void> {
     await import("./utils/save-race-winner.test");
 
     const duration = (Date.now() - startTime) / MS_IN_SECOND;
-    console.log(`\n ALL TESTS PASSED SUCCESSFULLY! (${duration.toFixed(DECIMAL_PLACES)}s)`);
+    console.log(
+      `\n ALL TESTS PASSED SUCCESSFULLY! (${duration.toFixed(DECIMAL_PLACES)}s)`,
+    );
     console.log("Estimated Coverage: > 70% ");
   } catch (error: unknown) {
     console.error("\n TEST RUNNER FAILED:");
